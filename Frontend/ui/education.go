@@ -12,22 +12,70 @@ import (
 
 func BuildEducationView() fyne.CanvasObject {
 	studentsBox := container.NewVBox()
-	refreshBtn := widget.NewButton("Загрузить студентов", func() {
-		studentsBox.Objects = nil
-		students, err := api.GetAllStudents()
-		if err != nil {
-			studentsBox.Add(widget.NewLabel("Ошибка загрузки"))
-			return
+
+	// Pagination variables
+	pageSize := 10
+	currentPage := 0
+	var allStudents []api.Student // Store all students
+	var currentStudents []api.Student
+
+	// Function to display students with pagination
+	displayStudents := func(students []api.Student, title string) {
+		studentsBox.Objects = nil // Clear existing content
+		studentsBox.Add(widget.NewLabel(title))
+		if len(students) == 0 {
+			studentsBox.Add(widget.NewLabel("Нет данных"))
 		}
-		for _, s := range students {
-			studentsBox.Add(widget.NewLabel(s.Name + " (" + s.Group + ") - Средний балл: " + fmt.Sprintf("%.2f", s.AvgGrade))) // Modified line
+		// Calculate start and end indices for pagination
+		start := currentPage * pageSize
+		end := start + pageSize
+		if end > len(students) {
+			end = len(students)
+		}
+		currentStudents = students[start:end] // Get students for the current page
+
+		for _, s := range currentStudents {
+			studentsBox.Add(widget.NewLabel(s.Name + " (" + s.Group + ") - Средний балл: " + fmt.Sprintf("%.2f", s.AvgGrade)))
 		}
 		studentsBox.Refresh()
+	}
+
+	// Buttons
+	honorBtn := widget.NewButton("Отличники", func() {
+		currentPage = 0 // Reset to first page
+		students, err := api.GetHonorStudents()
+		if err != nil {
+			studentsBox.Objects = []fyne.CanvasObject{widget.NewLabel("Ошибка загрузки отличников")}
+			studentsBox.Refresh()
+			return
+		}
+		allStudents = students // Store the students
+		displayStudents(allStudents, "Список отличников:")
+
 	})
 
-	return container.NewVBox(
-		widget.NewLabel("Учебная деятельность"),
-		refreshBtn,
-		studentsBox,
+	expelledBtn := widget.NewButton("На отчисление", func() {
+		currentPage = 0 // Reset to first page
+		students, err := api.GetExpelledStudents()
+		if err != nil {
+			studentsBox.Objects = []fyne.CanvasObject{widget.NewLabel("Ошибка загрузки студентов на отчисление")}
+			studentsBox.Refresh()
+			return
+		}
+		allStudents = students // Store the students
+		displayStudents(allStudents, "Список на отчисление:")
+	})
+
+	//pagination := container.NewHBox() // Remove pagination buttons
+
+	content := container.NewBorder(
+		container.NewVBox(honorBtn, expelledBtn), // Top: Buttons
+		nil,                                      // Bottom: Pagination
+		nil,
+		nil,
+		studentsBox, // Center: Student List
 	)
+
+	scrollContainer := container.NewScroll(content)
+	return scrollContainer
 }

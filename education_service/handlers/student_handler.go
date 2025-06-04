@@ -66,3 +66,21 @@ func (h *StudentHandler) AddGrade(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, grade)
 }
+
+func (h *StudentHandler) GetHonorStudents(c *gin.Context) {
+	students, err := h.service.GetHonorStudents()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, students)
+}
+
+func (h *StudentHandler) GetExpelledStudents(c *gin.Context) {
+	students, err := h.service.GetExpelledStudents()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, students)
+}

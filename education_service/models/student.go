@@ -7,7 +7,7 @@ type Student struct {
 	Name     string  `json:"name"`
 	Group    string  `json:"group"`
 	Grades   []Grade `json:"grades" gorm:"foreignKey:StudentID"`
-	AvgGrade float64 `json:"avg_grade" gorm:"-"` // поле не сохраняется в БД
+	AvgGrade float64 `json:"avg_grade" gorm:"column:avg_grade"` // поле не сохраняется в БД
 }
 
 type Grade struct {

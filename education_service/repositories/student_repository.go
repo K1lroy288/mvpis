@@ -33,3 +33,29 @@ func (r *StudentRepository) CreateStudent(student *models.Student) error {
 func (r *StudentRepository) AddGrade(grade *models.Grade) error {
 	return r.DB.Create(grade).Error
 }
+
+func (r *StudentRepository) GetHonorStudents() ([]models.Student, error) {
+	var students []models.Student
+	err := r.DB.Raw(`
+		SELECT s.*, COALESCE(AVG(g.value), 0) as avg_grade
+		FROM students s
+		LEFT JOIN grades g ON s.id = g.student_id
+		GROUP BY s.id
+		HAVING COALESCE(AVG(g.value), 0) >= ?
+	`, 4.5).Preload("Grades").Scan(&students).Error
+
+	return students, err
+}
+
+func (r *StudentRepository) GetExpelledStudents() ([]models.Student, error) {
+	var students []models.Student
+	err := r.DB.Raw(`
+		SELECT s.*, COALESCE(AVG(g.value), 0) as avg_grade
+		FROM students s
+		LEFT JOIN grades g ON s.id = g.student_id
+		GROUP BY s.id
+		HAVING COALESCE(AVG(g.value), 0) <= ?
+	`, 2.5).Preload("Grades").Scan(&students).Error
+
+	return students, err
+}

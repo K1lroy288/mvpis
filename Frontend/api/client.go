@@ -5,21 +5,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 type Student struct {
-	ID       uint    `json:"id"`
 	Name     string  `json:"name"`
 	Group    string  `json:"group"`
-	AvgGrade float64 `json:"avg_grade"` // Add this line
+	Grades   []Grade `json:"grades" `
+	AvgGrade float64 `json:"avg_grade"` // поле не сохраняется в БД
 }
 
 type Grade struct {
-	StudentID uint    `json:"student_id"`
 	Subject   string  `json:"subject"`
-	Score     float64 `json:"score"`
-	Passed    bool    `json:"passed"`
+	Value     float64 `json:"value"`
+	Semester  int     `json:"semester"`
+	StudentID uint
 }
 
 func GetAllStudents() ([]Student, error) {
@@ -89,4 +90,32 @@ func GetAllPublications() ([]Publication, error) {
 	var publications []Publication
 	err = json.Unmarshal(body, &publications)
 	return publications, err
+}
+
+func GetHonorStudents() ([]Student, error) {
+	resp, err := http.Get("http://localhost:8080/api/v1/students/honor")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	var students []Student
+	err = json.Unmarshal(body, &students)
+	log.Printf("student: %+v", students[0])
+	return students, err
+}
+
+func GetExpelledStudents() ([]Student, error) {
+	resp, err := http.Get("http://localhost:8080/api/v1/students/expelled")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	var students []Student
+	err = json.Unmarshal(body, &students)
+	log.Printf("student: %+v", students[0])
+	return students, err
 }
