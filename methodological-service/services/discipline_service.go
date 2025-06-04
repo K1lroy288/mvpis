@@ -28,3 +28,7 @@ func (s *DisciplineService) RegisterDiscipline(discipline *models.Discipline) er
 func (s *DisciplineService) UploadFile(file *models.File) error {
 	return s.repo.AddFile(file)
 }
+
+func (s *DisciplineService) GetFilesForDiscipline(disciplineID uint) ([]models.File, error) {
+	return s.repo.GetFilesForDiscipline(disciplineID)
+}

@@ -13,7 +13,7 @@ func main() {
 	myWindow.Resize(fyne.NewSize(1000, 600))
 
 	content := container.NewMax()
-	sidebar := ui.BuildSidebar(content)
+	sidebar := ui.BuildSidebar(content, myWindow)
 
 	mainContainer := container.NewHSplit(sidebar, content) // Горизонтальный сплит: слева сайдбар, справа контент
 	mainContainer.Offset = 0.2                             // Ширина сайдбара (20%)

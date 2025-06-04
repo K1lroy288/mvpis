@@ -33,3 +33,9 @@ func (r *DisciplineRepository) CreateDiscipline(discipline *models.Discipline) e
 func (r *DisciplineRepository) AddFile(file *models.File) error {
 	return r.DB.Create(file).Error
 }
+
+func (r *DisciplineRepository) GetFilesForDiscipline(disciplineID uint) ([]models.File, error) {
+	var files []models.File
+	err := r.DB.Where("discipline_id = ?", disciplineID).Find(&files).Error
+	return files, err
+}

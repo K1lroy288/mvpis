@@ -35,6 +35,7 @@ func BuildEducationView() fyne.CanvasObject {
 		currentStudents = students[start:end] // Get students for the current page
 
 		for _, s := range currentStudents {
+			fmt.Println(s.AvgGrade) // Print the value of AvgGrade
 			studentsBox.Add(widget.NewLabel(s.Name + " (" + s.Group + ") - Средний балл: " + fmt.Sprintf("%.2f", s.AvgGrade)))
 		}
 		studentsBox.Refresh()

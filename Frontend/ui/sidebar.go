@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func BuildSidebar(content *fyne.Container) *fyne.Container {
+func BuildSidebar(content *fyne.Container, win fyne.Window) *fyne.Container {
 	return container.NewVBox(
 		widget.NewLabel("Модули"),
 		widget.NewButton("Учебная деятельность", func() {
@@ -15,7 +15,7 @@ func BuildSidebar(content *fyne.Container) *fyne.Container {
 			content.Refresh()
 		}),
 		widget.NewButton("Учебно-методическая", func() {
-			content.Objects = []fyne.CanvasObject{BuildMetodichkaView(content)}
+			content.Objects = []fyne.CanvasObject{BuildMetodichkaView(win, content)}
 			content.Refresh()
 		}),
 		widget.NewButton("Научная деятельность", func() {

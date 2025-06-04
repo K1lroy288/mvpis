@@ -13,5 +13,6 @@ func SetupRoutes(router *gin.Engine, handler *handlers.DisciplineHandler) {
 		api.GET("/disciplines/:id", handler.GetDisciplineByID)
 		api.POST("/disciplines", handler.CreateDiscipline)
 		api.POST("/disciplines/:id/files", handler.UploadFile)
+		api.GET("/disciplines/:id/files", handler.GetFilesForDiscipline)
 	}
 }
