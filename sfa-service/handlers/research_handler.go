@@ -39,19 +39,6 @@ func (h *ResearchHandler) CreatePublication(c *gin.Context) {
 	c.JSON(http.StatusCreated, publication)
 }
 
-func (h *ResearchHandler) CreateConference(c *gin.Context) {
-	var conference models.Conference
-	if err := c.ShouldBindJSON(&conference); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	if err := h.service.CreateConference(&conference); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusCreated, conference)
-}
-
 func (h *ResearchHandler) GetAllTheses(c *gin.Context) {
 	theses, err := h.service.GetAllTheses()
 	if err != nil {
@@ -84,4 +71,26 @@ func (h *ResearchHandler) AssignSupervisor(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Supervisor assigned"})
+}
+
+func (h *ResearchHandler) GetAllConferences(c *gin.Context) {
+	conferences, err := h.service.GetAllConferences()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, conferences)
+}
+
+func (h *ResearchHandler) CreateConference(c *gin.Context) {
+	var conference models.Conference
+	if err := c.ShouldBindJSON(&conference); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := h.service.CreateConference(&conference); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, conference)
 }

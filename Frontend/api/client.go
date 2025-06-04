@@ -216,3 +216,38 @@ func GetFilesForDiscipline(disciplineID uint) ([]File, error) {
 
 	return files, nil
 }
+
+type Conference struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Date        string `json:"date"`
+	Participant string `json:"participant"`
+}
+
+func GetAllConferences() ([]Conference, error) {
+	resp, err := http.Get("http://localhost:8082/api/v1/research/conferences")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	var conferences []Conference
+	err = json.Unmarshal(body, &conferences)
+	return conferences, err
+}
+
+func CreateConference(conference Conference) error {
+	data, _ := json.Marshal(conference)
+	resp, err := http.Post("http://localhost:8082/api/v1/research/conferences", "application/json", bytes.NewBuffer(data))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("ошибка: %s", string(body))
+	}
+	return nil
+}

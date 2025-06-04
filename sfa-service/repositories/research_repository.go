@@ -46,3 +46,9 @@ func (r *ResearchRepository) AssignSupervisor(thesisID, supervisorID uint) error
 	thesis.SupervisorID = supervisorID
 	return r.DB.Save(&thesis).Error
 }
+
+func (r *ResearchRepository) GetAllConferences() ([]models.Conference, error) {
+	var conferences []models.Conference
+	err := r.DB.Find(&conferences).Error
+	return conferences, err
+}

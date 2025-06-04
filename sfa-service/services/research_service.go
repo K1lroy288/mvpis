@@ -36,3 +36,7 @@ func (s *ResearchService) CreateThesis(thesis *models.Thesis) error {
 func (s *ResearchService) AssignSupervisor(thesisID, supervisorID uint) error {
 	return s.repo.AssignSupervisor(thesisID, supervisorID)
 }
+
+func (s *ResearchService) GetAllConferences() ([]models.Conference, error) {
+	return s.repo.GetAllConferences()
+}
