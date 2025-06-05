@@ -55,6 +55,20 @@ func BuildNaukaView(content *fyne.Container) fyne.CanvasObject {
 		widget.NewLabel("Название:"), nameEntry,
 		widget.NewLabel("Дата:"), dateEntry,
 		widget.NewLabel("Участник:"), participantEntry,
+		widget.NewButton("Регистрация", func() {
+			conference := api.Conference{
+				Name:        nameEntry.Text,
+				Date:        dateEntry.Text,
+				Participant: participantEntry.Text,
+			}
+
+			err := api.CreateConference(conference)
+			if err != nil {
+				widget.ShowPopUp(widget.NewLabel(fmt.Sprintf("Ошибка регистрации: %s", err.Error())), fyne.CurrentApp().Driver().CanvasForObject(content))
+				return
+			}
+			widget.ShowPopUp(widget.NewLabel("Конференция успешно зарегистрирована"), fyne.CurrentApp().Driver().CanvasForObject(content))
+		}),
 	)
 	registrationForm.Hide() // Initially hide the form
 
@@ -66,7 +80,7 @@ func BuildNaukaView(content *fyne.Container) fyne.CanvasObject {
 			registrationForm.Show()
 		}
 
-		conference := api.Conference{
+		/* conference := api.Conference{
 			Name:        nameEntry.Text,
 			Date:        dateEntry.Text,
 			Participant: participantEntry.Text,
@@ -76,7 +90,7 @@ func BuildNaukaView(content *fyne.Container) fyne.CanvasObject {
 			widget.ShowPopUp(widget.NewLabel(fmt.Sprintf("Ошибка регистрации: %s", err.Error())), fyne.CurrentApp().Driver().CanvasForObject(content))
 			return
 		}
-		widget.ShowPopUp(widget.NewLabel("Конференция успешно зарегистрирована"), fyne.CurrentApp().Driver().CanvasForObject(content))
+		widget.ShowPopUp(widget.NewLabel("Конференция успешно зарегистрирована"), fyne.CurrentApp().Driver().CanvasForObject(content)) */
 		// Optionally, refresh the conference list after registration
 		// refreshConferences()
 	})
